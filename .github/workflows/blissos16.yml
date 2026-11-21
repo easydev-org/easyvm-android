@@ -63,6 +63,7 @@ jobs:
     secrets: inherit
     with:
       image_repository: easydev-org/easyvm
+      disk_gb: "12"
       group: blissos16
       disks_repository: ${{ inputs.disks_repository }}
       stages: |
@@ -85,6 +86,7 @@ jobs:
     secrets: inherit
     with:
       image_repository: easydev-org/easyvm
+      disk_gb: "12"
       group: blissos16
       disks_repository: ${{ inputs.disks_repository }}
       stages: |
