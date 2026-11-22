@@ -59,10 +59,11 @@ jobs:
     # Without this `if:`, `-f from_tag=android-blissos-install` would start the forty-step install that
     # REPUBLISHES the very tag the caller named.
     if: github.event_name != 'workflow_dispatch' || inputs.from_tag == ''
-    uses: easydev-org/easyvm/.github/workflows/stage.yml@main
+    uses: easydev-org/easyvm/.github/workflows/stage.yml@v0.0.2
     secrets: inherit
     with:
       image_repository: easydev-org/easyvm
+      image_tag: v0.0.2
       disk_gb: "12"
       group: blissos16
       disks_repository: ${{ inputs.disks_repository }}
@@ -82,10 +83,11 @@ jobs:
   vm:
     needs: [install]
     if: always() && !cancelled() && (github.event_name != 'workflow_dispatch' || inputs.from_tag == '' || inputs.from_tag == 'android-blissos-install')
-    uses: easydev-org/easyvm/.github/workflows/stage.yml@main
+    uses: easydev-org/easyvm/.github/workflows/stage.yml@v0.0.2
     secrets: inherit
     with:
       image_repository: easydev-org/easyvm
+      image_tag: v0.0.2
       disk_gb: "12"
       group: blissos16
       disks_repository: ${{ inputs.disks_repository }}
