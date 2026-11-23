@@ -15,10 +15,11 @@ step "the media this stage boots from is already on disk"
   needs [blissos-16.9.7.iso]
 
 step "give the installer a disk with its ESP already there"
-  disk disk.qcow2
-  disk_esp_mib "{{ esp_mib }}"
-  disk_gb "{{ disk_gb }}"
-  disk_gpt
+  disk
+    file disk.qcow2
+    esp_mib "{{ esp_mib }}"
+    size "{{ disk_gb }}"
+    gpt
 
 step "boot the installer"
   boot
