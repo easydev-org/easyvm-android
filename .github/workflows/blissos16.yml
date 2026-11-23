@@ -77,7 +77,7 @@ jobs:
             "name": "android-blissos-install",
             "file": "blissos16/steps/install.walk",
             "pull": "",
-            "assets": ["iso-blissos-16.9.7:blissos-16.9.7.iso"],
+            "assets": ["iso-blissos-16.9.7:blissos-16.9.7.iso.tar"],
             "out": "android-blissos-install.qcow2",
             "publish": "android-blissos-install",
             "timeout": 180
