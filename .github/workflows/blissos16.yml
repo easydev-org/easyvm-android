@@ -64,6 +64,10 @@ jobs:
     with:
       image_repository: easydev-org/easyvm
       image_tag: v0.0.2
+      # THE MACHINE THIS REPOSITORY OWNS. `easyvm-android/shapes/android.yaml` is the ONE
+      # definition of it: the engine keeps no copy, so a change to what this guest IS happens
+      # here and nowhere else.
+      shapes_dir: shapes
       disk_gb: "12"
       group: blissos16
       disks_repository: ${{ inputs.disks_repository }}
@@ -88,6 +92,10 @@ jobs:
     with:
       image_repository: easydev-org/easyvm
       image_tag: v0.0.2
+      # THE MACHINE THIS REPOSITORY OWNS. `easyvm-android/shapes/android.yaml` is the ONE
+      # definition of it: the engine keeps no copy, so a change to what this guest IS happens
+      # here and nowhere else.
+      shapes_dir: shapes
       disk_gb: "12"
       group: blissos16
       disks_repository: ${{ inputs.disks_repository }}
