@@ -31,6 +31,8 @@ name: blissos16
 # gets a 404, falls back to the install disk - which has no desktop - and burns its budget.
 
 on:
+  # ONE STAGE, DISPATCHED BY HAND. This was a job inside `blissos16.yml`, where `needs:` decided the
+  # order; each stage is its own workflow now.
   workflow_dispatch:
     inputs:
       disks_repository:
@@ -38,51 +40,21 @@ on:
         default: "easydev-org/easyvm-android"
       from_tag:
         description: >-
-          start from a PUBLISHED disk: android-blissos-install or android-blissos-vm. Empty runs the whole chain.
-        default: ""
+          the PUBLISHED disk this stage continues from (default android-blissos-install)
+        default: "android-blissos-install"
 
 concurrency:
-  group: blissos16
+  group: blissos16-vm-configure
   cancel-in-progress: true
 
-# THE CALLED WORKFLOW CANNOT ASK FOR MORE THAN ITS CALLER GRANTS, and `stage.yml` needs all three:
-# `packages: write` to publish a disk, `checks: write` to stream the live log, `contents: read` to check
-# out the walkthroughs.
 permissions:
   contents: read
   packages: write
   checks: write
 
 jobs:
-  install:
-    # `from_tag:` NAMES A PUBLISHED DISK AND THE CHAIN STARTS FROM IT - SO THE INSTALL DOES NOT RUN.
-    # Without this `if:`, `-f from_tag=android-blissos-install` would start the forty-step install that
-    # REPUBLISHES the very tag the caller named.
-    if: github.event_name != 'workflow_dispatch' || inputs.from_tag == ''
-    uses: easydev-org/easyvm/.github/workflows/stage.yml@v0.0.2
-    secrets: inherit
-    with:
-      image_repository: easydev-org/easyvm
-      image_tag: v0.0.2
-      disk_gb: "12"
-      group: blissos16
-      disks_repository: ${{ inputs.disks_repository }}
-      stages: |
-        [
-          {
-            "name": "android-blissos-install",
-            "file": "blissos16/steps/install.walk",
-            "pull": "",
-            "assets": ["iso-blissos-16.9.7:blissos-16.9.7.iso.tar"],
-            "out": "android-blissos-install.qcow2",
-            "publish": "android-blissos-install",
-            "timeout": 180
-          }
-        ]
-
   vm:
     needs: [install]
-    if: always() && !cancelled() && (github.event_name != 'workflow_dispatch' || inputs.from_tag == '' || inputs.from_tag == 'android-blissos-install')
     uses: easydev-org/easyvm/.github/workflows/stage.yml@v0.0.2
     secrets: inherit
     with:
@@ -96,7 +68,7 @@ jobs:
           {
             "name": "android-blissos-vm",
             "file": "blissos16/steps/vm-configure.walk",
-            "pull": "android-blissos-install",
+            "pull": "${{ inputs.from_tag }}",
             "out": "android-blissos-vm.qcow2",
             "publish": "android-blissos-vm",
             "timeout": 90
