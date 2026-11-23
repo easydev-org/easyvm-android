@@ -143,10 +143,5 @@ step "stop the installer"
   stop kill
   timeout 120
 
-step "copy the loader to the UEFI fallback path"
-  esp_fallback
-    disk disk
-    from /EFI/BLISSOS
-
 step "publish the disk"
     save "{{ out }}"
